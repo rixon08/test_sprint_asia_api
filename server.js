@@ -7,21 +7,15 @@ const sendResponse = require("./helpers/responseHelper");
 const app = express();
 const PORT = process.env.PORT || 4000;
 
-// Middlewaree
+
 app.use(cors());
 app.use(express.json());
 
-// // Route dasar
+
 app.get('/', (req, res) => {
     res.json({ message: 'Welcome to my API1!' });
 });
 
-// // Jalankan server
-// app.listen(PORT, () => {
-//     console.log(`Server running on http://localhost:${PORT}`);
-// });
-
-// Koneksi ke MariaDBa
 const pool = mysql.createPool({
     host: "apitest.malangculinary.com",
     user: "rahm3231_ts",
@@ -29,21 +23,12 @@ const pool = mysql.createPool({
     database: "rahm3231_test_sprint",
     waitForConnections: true,
     queueLimit: 0,
-    keepAliveInitialDelay: 10000, // 0 by default.
-    enableKeepAlive: true, // false by default.
+    keepAliveInitialDelay: 10000,
+    enableKeepAlive: true, 
 });
 
 module.exports = pool;
 
-//   db.getConnection(err => {
-//     if (err) {
-//       console.error("Database connection failed: " + err.stack);
-//       return;
-//     }
-//     console.log("Connected to MariaDB.");
-//   });
-
-// Tambah task
 app.post("/task", async (req, res) => {
     const { title, deadline } = req.body;
     try {
@@ -58,7 +43,7 @@ app.post("/task", async (req, res) => {
     }
 });
 
-// Tambah task
+
 app.post("/subtask", async (req, res) => {
     const { title, id_master } = req.body;
     try {
@@ -88,7 +73,6 @@ app.get("/taskcompleted", async (req, res) => {
                 };
             }
 
-            // Only add subtasks if they exist
             if (row.sub_id) {
                 tasks[row.id].sub_tasks.push({
                     id: row.sub_id,
@@ -101,12 +85,6 @@ app.get("/taskcompleted", async (req, res) => {
 
         const resultData = Object.values(tasks);
         sendResponse(res, 200, true, "Success", resultData);
-        // res.json({
-        //   code: 200,
-        //   status: true,
-        //   message: "Success",
-        //   data: tasks
-        // });
     } catch (err) {
         console.error("Database error:", err);
         sendResponse(res, 500, false, "Server error", []);
@@ -129,7 +107,6 @@ app.get("/taskongoing", async (req, res) => {
                 };
             }
 
-            // Only add subtasks if they exist
             if (row.sub_id) {
                 tasks[row.id].sub_tasks.push({
                     id: row.sub_id,
@@ -141,45 +118,13 @@ app.get("/taskongoing", async (req, res) => {
         });
         const resultData = Object.values(tasks);
         sendResponse(res, 200, true, "Success", resultData);
-        // res.json({
-        //   code: 200,
-        //   status: true,
-        //   message: "Success",
-        //   data: tasks
-        // });
     } catch (err) {
         console.error("Database error:", err);
         sendResponse(res, 500, false, "Server error", []);
     }
-    // pool.query("SELECT m.id AS id, m.title AS title, m.is_completed AS is_completed, m.deadline AS deadline, m.completed_date AS completed_date, s.id AS sub_id, s.title AS sub_title, s.is_completed AS sub_completed FROM tb_main_task m LEFT JOIN tb_sub_task s ON m.id = s.id_master where m.is_completed = 0", (err, results) => {
-    //     if (err) throw err;
-    //     const tasks = {};
-    //     results.forEach(row => {
-    //         if (!tasks[row.id]) {
-    //             tasks[row.id] = {
-    //                 id: row.id,
-    //                 title: row.title,
-    //                 is_completed: row.is_completed,
-    //                 deadline: row.deadline,
-    //                 completed_date: row.completed_date,
-    //                 subtasks: []
-    //             };
-    //         }
+});
 
-    //         // Only add subtasks if they exist
-    //         if (row.sub_id) {
-    //             tasks[row.id].subtasks.push({
-    //                 id: row.sub_id,
-    //                 title: row.sub_title,
-    //                 is_completed: row.sub_completed
-    //             });
-    //         }
-    //     });
-        
-        //   res.json({ tasks: results });
-    });
 
-// Edit task
 app.post("/updatetask/:id", async (req, res) => {
     const { title, deadline, completed_date, is_completed } = req.body;
     try {
@@ -219,7 +164,7 @@ app.post("/updatetask/:id", async (req, res) => {
       }
 });
 
-// Edit task
+
 app.post("/updatesubtask/:id",async (req, res) => {
     const { title, is_completed, id_master } = req.body;
     try {
@@ -272,7 +217,7 @@ app.post("/updatesubtask/:id",async (req, res) => {
       }
 });
 
-// Hapus task
+
 app.post("/deletetask/:id", async (req, res) => {
 
     try {
@@ -308,7 +253,7 @@ app.post("/deletetask/:id", async (req, res) => {
     }
 });
 
-// Hapus task
+
 app.post("/deletesubtask/:id", async (req, res) => {
     try {
         const { id } = req.params;
