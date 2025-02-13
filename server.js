@@ -345,7 +345,7 @@ app.post("/deletesubtask/:id", async (req, res) => {
                 [id_master]
             );
     
-            if (totalSubtasks[0].count === completedSubtasks[0].count) {
+            if (totalSubtasks[0].count != 0 && totalSubtasks[0].count === completedSubtasks[0].count) {
                 await connection.query(
                 `UPDATE tb_main_task SET is_completed = 1, completed_date = NOW() WHERE id = ?`,
                 [id_master]
