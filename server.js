@@ -17,10 +17,10 @@ app.get('/', (req, res) => {
 });
 
 const pool = mysql.createPool({
-    host: "apitest.malangculinary.com",
-    user: "rahm3231_ts",
-    password: "Rizki5566",
-    database: "rahm3231_test_sprint",
+    host: "",
+    user: "",
+    password: "",
+    database: "",
     waitForConnections: true,
     queueLimit: 0,
     keepAliveInitialDelay: 10000,
